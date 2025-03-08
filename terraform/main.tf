@@ -14,6 +14,11 @@ provider "google" {
   credentials = var.credentials
 }
 
+resource "google_compute_address" "static_ip" {
+  name   = "vm-static-ip"
+  region = var.location
+}
+
 resource "google_storage_bucket" "storage_bucket" {
   name          = "${local.gcs_bucket_name}-1"
   location      = var.location
@@ -147,6 +152,10 @@ resource "time_static" "deployment" {}
 output "deployment_epoch" {
   value = time_static.deployment.unix
 }
+output "vm_static_ip" {
+  value = google_compute_address.static_ip.address
+  description = "The external static IP assigned to the VM"
+}
 
 resource "google_compute_instance" "instance-20250206-053211" {
   boot_disk {
@@ -205,6 +214,7 @@ resource "google_compute_instance" "instance-20250206-053211" {
     network = "default"
     access_config {
       network_tier = "PREMIUM"
+         nat_ip = google_compute_address.static_ip.address  # Assign the static IP
     }
 
     queue_count = 0
