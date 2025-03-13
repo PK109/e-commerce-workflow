@@ -33,7 +33,7 @@ variable "vm_standard_os" {
 
 variable "repo_url" {
     description = "URL address to the repo containing this project"
-    default = "https://github.com/PK109/DataEngineering-2025.git"
+    default = "https://github.com/PK109/e-commerce-workflow.git"
 }
 
 variable "vm_user" {

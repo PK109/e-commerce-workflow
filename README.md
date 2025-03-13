@@ -8,4 +8,7 @@ bigquery.datasets.delete
 compute.instances.*
 storage.buckets.create
 storage.buckets.delete
-Service account user
+
+
+to verify what have happened on startup script, run this command on target instance:
+sudo journalctl -u google-startup-scripts.service
