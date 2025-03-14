@@ -1,5 +1,5 @@
-id: 04_gcp_kv_setup
-namespace: e-commerce
+id: gcp_kv_setup
+namespace: prod
 
 tasks:
   - id: user_note

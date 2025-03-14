@@ -1,0 +1,45 @@
+id: dlt_dataset_import
+namespace: prod
+
+inputs:
+
+  - id: month
+    type: SELECT
+    displayName: Select period of time
+    values: [ "2019-Oct", "2019-Nov", "2019-Dec", "2020-Jan", "2020-Feb", "2020-Mar", "2020-Apr" ]
+    defaults: "2019-Oct"
+
+variables:
+  file: "{{inputs.month}}.csv.gz"
+  gcs_dataset: "{{kv('GCP_DATASET')}}"
+  gcs_raw_url: "gs://{{kv('GCP_BUCKET_URL')}}/{{vars.gcs_dataset}}/raw/{{vars.file}}"
+  url_base: "https://data.rees46.com/datasets/marketplace"
+  data: "{{outputs.extract.outputFiles[inputs.month ~ '.csv.gz']}}"
+
+tasks:
+
+  - id: extract
+    type: io.kestra.plugin.scripts.shell.Commands
+    outputFiles:
+      - "*.csv.gz"
+    taskRunner:
+      type: io.kestra.plugin.core.runner.Process
+    commands:
+      - wget -qO{{render(vars.file)}} {{vars.url_base}}/{{render(vars.file)}}
+      
+  - id: upload_to_gcs
+    type: io.kestra.plugin.gcp.gcs.Upload
+    from: "{{render(vars.data)}}"
+    # {{ outputs["extract"]["outputFiles"]["2019-Oct.csv.gz"] }}
+    to: "{{render(vars.gcs_raw_url)}}"
+  
+  - id: purge_files
+    type: io.kestra.plugin.core.storage.PurgeCurrentExecutionFiles
+
+pluginDefaults:
+  - type: io.kestra.plugin.gcp
+    values:
+      serviceAccount: "{{kv('GCP_CREDENTIALS')}}"
+      projectId: "{{kv('GCP_PROJECT_ID')}}"
+      location: "{{kv('GCP_LOCATION')}}"
+      bucket: "{{kv('GCP_BUCKET_URL')}}"
