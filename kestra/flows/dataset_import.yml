@@ -1,4 +1,4 @@
-id: dlt_dataset_import
+id: dataset_import
 namespace: prod
 
 inputs:

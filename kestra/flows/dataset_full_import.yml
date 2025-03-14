@@ -1,4 +1,4 @@
-id: dlt_dataset_full_import
+id: dataset_full_import
 namespace: prod
 
 variables:
