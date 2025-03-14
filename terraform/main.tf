@@ -92,8 +92,18 @@ resource "google_compute_instance" "instance-e-commerce" {
   sudo groupadd docker
   sudo usermod -aG docker ${var.vm_user}
   newgrp docker
+  # Preparing .env file
   cd /home/${var.vm_user}/e-commerce_project
   cp sample.env .env
+  # Installing Terraform
+  cd /home/${var.vm_user}/e-commerce_project/terraform/
+  chmod +x ./tf_install.sh
+  ./tf_install.sh
+    # Installing Java
+  cd /home/${var.vm_user}/e-commerce_project/spark/
+  chmod +x ./java_install.sh
+  ./java_install.sh
+  pip install pyspark
   set +x
   EOT
 
