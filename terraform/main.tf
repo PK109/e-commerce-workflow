@@ -142,6 +142,78 @@ resource "google_compute_instance" "instance-e-commerce" {
 }
 
 
+resource "google_dataproc_autoscaling_policy" "auto_scaling" {
+  policy_id = "auto-scaling-policy"
+  location = var.location
+
+  worker_config {
+    max_instances = 10  # Adjust as needed
+    min_instances = 2   # Matches your `--num-workers 2`
+    weight        = 1
+  }
+
+  basic_algorithm {
+    yarn_config {
+      scale_up_factor   = 0.5
+      scale_down_factor = 0.5
+      graceful_decommission_timeout = "120s"
+    }
+  }
+}
+
+resource "google_dataproc_cluster" "e_commerce_cluster" {
+  name     = "e-commerce-dataproc-cluster"
+  region   = var.location
+  project  = var.project_id
+
+  cluster_config {
+
+    # Enable component gateway
+    endpoint_config {
+      enable_http_port_access = true
+    }
+
+    master_config {
+      num_instances  = 1
+      machine_type   = "e2-medium"
+      disk_config {
+        boot_disk_type    = "pd-balanced"
+        boot_disk_size_gb = 100
+      }
+    }
+
+    worker_config {
+      machine_type = "e2-medium"
+      num_instances = 2
+      disk_config {
+        boot_disk_type    = "pd-balanced"
+        boot_disk_size_gb = 200
+      }
+    }
+
+    software_config {
+      image_version = "2.2-debian12"
+      override_properties = {
+        "dataproc:dataproc.allow.zero.workers" = "true"
+      }
+      optional_components = [
+        "JUPYTER",
+        "DOCKER"
+      ]
+    }
+
+    autoscaling_config {
+      policy_uri = google_dataproc_autoscaling_policy.auto_scaling.name
+    }
+    
+
+    gce_cluster_config {
+      internal_ip_only = true  # Equivalent to --no-address
+    }
+  }
+}
+
+
 output "deployment_epoch" {
   value = time_static.deployment.unix
 }
