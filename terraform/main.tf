@@ -76,11 +76,11 @@ resource "google_compute_instance" "instance-e-commerce" {
   metadata_startup_script = <<-EOT
   #!/bin/bash
   set -x
+  sudo apt-get update
+  sudo apt-get install ca-certificates curl git python3-pip
+  sudo install -m 0755 -d /etc/apt/keyrings
   git clone ${var.repo_url} /home/${var.vm_user}/e-commerce_project
   # Add Docker's official GPG key:
-  sudo apt-get update
-  sudo apt-get install ca-certificates curl
-  sudo install -m 0755 -d /etc/apt/keyrings
   sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
   sudo chmod a+r /etc/apt/keyrings/docker.asc
   # Add the repository to Apt sources:
