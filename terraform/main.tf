@@ -77,7 +77,7 @@ resource "google_compute_instance" "instance-e-commerce" {
   #!/bin/bash
   set -x
   sudo apt-get update
-  sudo apt-get install ca-certificates curl git python3-pip
+  sudo apt-get -y install ca-certificates curl git python3-pip
   sudo install -m 0755 -d /etc/apt/keyrings
   git clone ${var.repo_url} /home/${var.vm_user}/e-commerce_project
   # Add Docker's official GPG key:
@@ -129,7 +129,12 @@ resource "google_compute_instance" "instance-e-commerce" {
 
   service_account {
     email  = "de-zoomcamp@fleet-aleph-447822-a2.iam.gserviceaccount.com"
-    scopes = ["https://www.googleapis.com/auth/devstorage.read_only", "https://www.googleapis.com/auth/logging.write", "https://www.googleapis.com/auth/monitoring.write", "https://www.googleapis.com/auth/service.management.readonly", "https://www.googleapis.com/auth/servicecontrol", "https://www.googleapis.com/auth/trace.append"]
+    scopes = ["https://www.googleapis.com/auth/devstorage.read_only",
+              "https://www.googleapis.com/auth/logging.write",
+              "https://www.googleapis.com/auth/monitoring.write", 
+              "https://www.googleapis.com/auth/service.management.readonly", 
+              "https://www.googleapis.com/auth/servicecontrol", 
+              "https://www.googleapis.com/auth/trace.append"]
   }
 
   shielded_instance_config {
@@ -147,8 +152,8 @@ resource "google_dataproc_autoscaling_policy" "auto_scaling" {
   location = var.location
 
   worker_config {
-    max_instances = 10  # Adjust as needed
-    min_instances = 2   # Matches your `--num-workers 2`
+    max_instances = 4  
+    min_instances = 2   
     weight        = 1
   }
 
@@ -175,27 +180,24 @@ resource "google_dataproc_cluster" "e_commerce_cluster" {
 
     master_config {
       num_instances  = 1
-      machine_type   = "e2-medium"
+      machine_type   = "e2-standard-2"
       disk_config {
         boot_disk_type    = "pd-balanced"
-        boot_disk_size_gb = 100
+        boot_disk_size_gb = 40
       }
     }
 
     worker_config {
-      machine_type = "e2-medium"
+      machine_type = "e2-standard-2"
       num_instances = 2
       disk_config {
         boot_disk_type    = "pd-balanced"
-        boot_disk_size_gb = 200
+        boot_disk_size_gb = 40
       }
     }
 
     software_config {
       image_version = "2.2-debian12"
-      override_properties = {
-        "dataproc:dataproc.allow.zero.workers" = "true"
-      }
       optional_components = [
         "JUPYTER",
         "DOCKER"
@@ -208,7 +210,10 @@ resource "google_dataproc_cluster" "e_commerce_cluster" {
     
 
     gce_cluster_config {
-      internal_ip_only = true  # Equivalent to --no-address
+      # internal_ip_only = true  
+      zone = local.zone
+      network = "default"
+
     }
   }
 }
