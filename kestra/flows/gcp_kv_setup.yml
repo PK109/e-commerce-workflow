@@ -1,5 +1,5 @@
 id: gcp_kv_setup
-namespace: prep
+namespace: dev
 
 tasks:
   - id: user_note
