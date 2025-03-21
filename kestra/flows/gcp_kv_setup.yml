@@ -1,10 +1,16 @@
 id: gcp_kv_setup
-namespace: prod
+namespace: prep
 
 tasks:
   - id: user_note
     type: io.kestra.plugin.core.log.Log
     message: GCP_CREDENTIALS should be provided manually to KV Store
+
+  - id: gcp_creds
+    type: io.kestra.plugin.core.kv.Set
+    key: GCP_CREDENTIALS
+    kvType: STRING
+    value: fill-that-KV-manually
 
   - id: gcp_project_id
     type: io.kestra.plugin.core.kv.Set

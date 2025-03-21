@@ -16,9 +16,5 @@ sudo journalctl -u google-startup-scripts.service
 To run instantly docker-compose with kestra, run command:
 docker compose --env-file=.env -f=kestra/docker-compose.yml up -d
 
-To speed up pipeline with ingesting data to GCS, files can be uploaded compressed and decompressed with mounting bucket on VM.
-sudo apt-get install gcsfuse -y
-mkdir ~/my-bucket
-gcsfuse your-bucket ~/my-bucket
+To speed up pipeline with ingesting data to GCS, files can be uploaded compressed and converted to parquet files with mounting bucket on VM.
 
-unzip ~/my-bucket/your-file.zip -d ~/my-bucket/unzipped-files/

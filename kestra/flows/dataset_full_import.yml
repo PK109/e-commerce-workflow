@@ -1,5 +1,5 @@
 id: dataset_full_import
-namespace: prod
+namespace: prep
 
 variables:
   file_list: [ "2019-Oct", "2019-Nov", "2019-Dec", "2020-Jan", "2020-Feb", "2020-Mar", "2020-Apr" ]

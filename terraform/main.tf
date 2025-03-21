@@ -101,9 +101,12 @@ resource "google_compute_instance" "instance-e-commerce" {
   ./tf_install.sh
     # Installing Java
   cd /home/${var.vm_user}/e-commerce_project/spark/
+  chmod +x ./gcsfuse_install.sh
+  ./gcsfuse_install.sh
   chmod +x ./java_install.sh
   ./java_install.sh
-  pip install pyspark
+  pip install pyspark jupyter 
+  # export PATH >> ~/.bashrc
   set +x
   EOT
 
