@@ -3,7 +3,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 jdk*
-dataset_*
 # C extensions
 *.so
 

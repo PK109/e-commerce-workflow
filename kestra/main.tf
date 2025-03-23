@@ -18,31 +18,25 @@ provider "kestra" {
 }
 
 resource "kestra_flow" "gcp_kv_setup" {
-  namespace = "prep"
+  namespace = "dev"
   flow_id = "gcp_kv_setup"
   content = file("flows/gcp_kv_setup.yml")
 }
 
-resource "kestra_flow" "subflow" {
-  namespace = "prep"
-  flow_id = "subflow"
-  content = file("flows/subflow.yml")
+resource "kestra_flow" "subflow_dev" {
+  namespace = "dev"
+  flow_id = "subflow_dev"
+  content = file("flows/subflow_dev.yml")
 }
 
-resource "kestra_flow" "subflow_import" {
-  namespace = "prep"
-  flow_id = "subflow_import"
-  content = file("flows/subflow_import.yml")
+resource "kestra_flow" "test_subflow" {
+  namespace = "dev"
+  flow_id = "test_subflow"
+  content = file("flows/test_subflow.yml")
 }
 
-resource "kestra_flow" "dataset_import" {
-  namespace = "prep"
-  flow_id = "dataset_import"
-  content = file("flows/dataset_import.yml")
-}
-
-resource "kestra_flow" "dataset_full_import" {
-  namespace = "prep"
-  flow_id = "dataset_full_import"
-  content = file("flows/dataset_full_import.yml")
+resource "kestra_flow" "data_daily_ingestion" {
+  namespace = "dev"
+  flow_id = "data_daily_ingestion"
+  content = file("flows/data_daily_ingestion.yml")
 }
