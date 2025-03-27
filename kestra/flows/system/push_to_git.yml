@@ -1,0 +1,31 @@
+id: push_to_git
+namespace: null
+
+inputs:
+  - id: CommitMessage
+    type: STRING
+    defaults: Kestra push all flows
+
+  - id: DryRun
+    type: BOOLEAN
+    defaults: true
+  
+  - id: namespace
+    type: STRING
+    defaults: dev
+
+tasks:
+  - id: log
+    type: io.kestra.plugin.core.log.Log
+    message: "Commit message: {{inputs.CommitMessage}}"
+
+  - id: commit_and_push
+    type: io.kestra.plugin.git.PushFlows
+    branch: develop
+    username: PK109
+    commitMessage: "{{inputs.CommitMessage}}"
+    dryRun: "{{inputs.DryRun}}"
+    gitDirectory: kestra/flows/{{inputs.namespace}}
+    password: "{{ kv('GITHUB_TOKEN') }}"
+    sourceNamespace: "{{inputs.namespace}}"
+    url: https://github.com/PK109/e-commerce-workflow
