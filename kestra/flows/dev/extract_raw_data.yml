@@ -1,0 +1,71 @@
+id: extract_raw_data
+namespace: null
+description: This flow downloads the raw file from server, splits it to separate files partitioned by day and uploads data to GCS.
+
+concurrency:
+  limit: 1
+
+inputs:
+  - id: month
+    type: SELECT
+    defaults: "2019-Dec"
+    values: [ "2019-Oct", "2019-Nov", "2019-Dec", "2020-Jan", "2020-Feb", "2020-Mar", "2020-Apr" ]
+
+variables:
+  filegz: "{{inputs.month}}.csv.gz"
+  file: "{{inputs.month}}.csv"
+  gcs_dataset: "{{kv('GCP_DATASET')}}"
+  gcs_url_base: "gs://{{kv('GCP_BUCKET_URL')}}/{{vars.gcs_dataset}}/partitioned"
+  url_base: "https://data.rees46.com/datasets/marketplace"
+  data: "{{outputs.extract.outputFiles[render(vars.file)]}}"
+  table: "e-commerce-data"
+  
+tasks:
+  - id: label
+    type: io.kestra.plugin.core.execution.Labels
+    labels:
+      date: "{{ inputs.month }}"
+      
+  - id: extract
+    type: io.kestra.plugin.scripts.shell.Commands
+    outputFiles:
+      - "*.csv"
+    taskRunner:
+      type: io.kestra.plugin.core.runner.Process
+    commands:
+      - wget -qO- {{vars.url_base}}/{{render(vars.filegz)}} | gunzip > {{render(vars.file)}}
+
+  - id: partition_by_day
+    type: io.kestra.plugin.scripts.shell.Commands
+    commands:
+      - "awk -F, 'NR==1 {header=$0; next} {split($1, d, \" \"); filename = \"day_\" d[1] \".csv\"} !(filename in seen) {print header > filename; seen[filename]} {print > filename}' {{render(vars.data)}}"
+    outputFiles:
+      - day_*.csv
+    targetOS: LINUX
+    taskRunner:
+      type: io.kestra.plugin.core.runner.Process
+
+  - id: for_each
+    type: io.kestra.plugin.core.flow.ForEach
+    values: "{{outputs.partition_by_day.outputFiles | keys }}"
+    tasks:
+      - id: debug
+        type: io.kestra.plugin.core.log.Log
+        message: "From: {{outputs.partition_by_day.outputFiles[taskrun.value]}},\nTo: {{render(vars.gcs_url_base)}}/{{taskrun.value}}"
+        disabled: true
+        
+      - id: upload_to_gcs
+        type: io.kestra.plugin.gcp.gcs.Upload
+        from: "{{outputs.partition_by_day.outputFiles[taskrun.value]}}"
+        to: "{{render(vars.gcs_url_base)}}/{{taskrun.value}}"
+
+  - id: purge_files
+    type: io.kestra.plugin.core.storage.PurgeCurrentExecutionFiles
+    
+pluginDefaults:
+  - type: io.kestra.plugin.gcp
+    values:
+      serviceAccount: "{{kv('GCP_CREDENTIALS')}}"
+      projectId: "{{kv('GCP_PROJECT_ID')}}"
+      location: "{{kv('GCP_LOCATION')}}"
+      bucket: "{{kv('GCP_BUCKET_URL')}}"
