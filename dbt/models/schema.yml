@@ -1,0 +1,9 @@
+sources:
+  - name: e_commerce_dataset
+    tables:
+      - name: e_commerce_data_dev
+
+models:
+  - name: dim_customers
+    description: >
+      Generated artificial data about customer

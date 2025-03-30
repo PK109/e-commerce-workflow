@@ -36,3 +36,11 @@ clean-targets:         # directories to be removed by `dbt clean`
 
 models:
   e_commerce_dbt:
+      staging:
+          materialized: view
+      core:
+          materialized: table
+
+vars:
+  us_states: ["SC","AK","NE","VA","ND","MO","NV","GA","NM","OK","FL","RI","MA","WI","IL","WV","CA","IA","SD","KY","HI","MT","CT","DE","WA","WY","MI","NJ","AR","KS","OH","NC","MS","ID","IN","CO","ME","TN","AL","AZ","PA","TX","LA","UT","NY","MN","OR","VT","MD","NH"]
+  
