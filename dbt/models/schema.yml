@@ -7,3 +7,9 @@ models:
   - name: dim_customers
     description: >
       Generated artificial data about customer
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+      - name: state
