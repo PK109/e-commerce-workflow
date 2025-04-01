@@ -1,5 +1,5 @@
  WITH user_data AS(
-    SELECT DISTINCT(user_id) FROM {{ source('e_commerce_dataset', 'e_commerce_data_dev') }}
+    SELECT DISTINCT(user_id) FROM {{ source('e_commerce_dataset', 'e-commerce-data') }}
     -- dbt build --select <model_name> --vars '{'is_test_run': 'false'}'
     {% if var('is_test_run', default=true) %}
         limit 1000

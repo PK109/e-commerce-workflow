@@ -1,7 +1,7 @@
 sources:
   - name: e_commerce_dataset
     tables:
-      - name: e_commerce_data_dev
+      - name: e-commerce-data
 
 models:
   - name: dim_customers

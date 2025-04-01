@@ -2,7 +2,7 @@ with
 
 source as (
 
-    select * from {{ source('e_commerce_dataset', 'e_commerce_data_dev') }}
+    select * from {{ source('e_commerce_dataset', 'e-commerce-data') }}
 
 ),
 
