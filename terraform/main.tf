@@ -92,6 +92,8 @@ resource "google_compute_instance" "instance-e-commerce" {
   sudo groupadd docker
   sudo usermod -aG docker ${var.vm_user}
   newgrp docker
+  echo 'alias "docker_up"="docker compose --env-file=/home/${var.vm_user}/e-commerce_project/.env -f /home/${var.vm_user}/e-commerce_project/kestra/docker-compose.yml up -d"' >> /home/${var.vm_user}/.bashrc
+  echo 'alias "docker_down"="docker compose --env-file=/home/${var.vm_user}/e-commerce_project/.env -f /home/${var.vm_user}/e-commerce_project/kestra/docker-compose.yml down"' >> /home/${var.vm_user}/.bashrc
   # Preparing .env file
   cd /home/${var.vm_user}/e-commerce_project
   cp sample.env .env
