@@ -2,6 +2,10 @@ id: ingest_to_bq
 namespace: null
 description: Files uploaded to GCS are ingested to BigQuery and archived in separate folder
 
+concurrency:
+  behavior: QUEUE
+  limit: 1
+
 variables:
   gcs_url_base: "gs://{{kv('GCP_BUCKET_URL')}}/{{kv('GCP_DATASET')}}"
   table_name: "e-commerce-data"
@@ -110,7 +114,7 @@ triggers:
     type: io.kestra.plugin.gcp.gcs.Trigger
     action: NONE
     from: "{{vars.gcs_url_base}}/partitioned/"
-    interval: PT1M
+    interval: PT10M
     regExp: .*.csv
 
 pluginDefaults:
