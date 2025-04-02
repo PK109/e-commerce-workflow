@@ -1,7 +1,6 @@
 variable "credentials" {
     description = "My GCP credentials file."
-    default = "/workspaces/e-commerce-workflow/.ssh/terraform-runner-keys.json"
-  
+    default = "/workspaces/e-commerce-workflow/.ssh/gcp-credentials.json"
 }
 
 variable "project_id" {
@@ -32,7 +31,7 @@ variable "vm_standard_os" {
 }
 
 variable "repo_url" {
-    description = "URL address to the repo containing this project"
+    description = "URL address to the repo containing this project. Should be publicly available to avoid working with GitHub tokens."
     default = "https://github.com/PK109/e-commerce-workflow.git"
 }
 
@@ -48,4 +47,5 @@ variable "gcs_storage_class" {
 locals {
   gcs_bucket_name = "${var.project_id}-e_commerce_storage"
   zone = "${var.location}-c"
+  dataproc_enabled = false
 }

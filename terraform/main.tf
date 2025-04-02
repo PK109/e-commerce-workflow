@@ -52,7 +52,7 @@ resource "google_bigquery_dataset" "bq_dataset" {
 resource "google_compute_instance" "instance-e-commerce" {
   boot_disk {
     auto_delete = true
-    device_name = "instance-${time_static.deployment.unix}"
+    device_name = var.vm_name
 
     initialize_params {
       image = "projects/ubuntu-os-cloud/global/images/ubuntu-2204-jammy-v20250128"
@@ -101,12 +101,9 @@ resource "google_compute_instance" "instance-e-commerce" {
   ./tf_install.sh
     # Installing Java
   cd /home/${var.vm_user}/e-commerce_project/spark/
-  chmod +x ./gcsfuse_install.sh
-  ./gcsfuse_install.sh
   chmod +x ./java_install.sh
   ./java_install.sh
   pip install pyspark jupyter 
-  # export PATH >> ~/.bashrc
   set +x
   EOT
 
@@ -151,6 +148,7 @@ resource "google_compute_instance" "instance-e-commerce" {
 
 
 resource "google_dataproc_autoscaling_policy" "auto_scaling" {
+  count = local.dataproc_enabled ? 1 : 0  # enable / disable dataproc
   policy_id = "auto-scaling-policy"
   location = var.location
 
@@ -170,6 +168,7 @@ resource "google_dataproc_autoscaling_policy" "auto_scaling" {
 }
 
 resource "google_dataproc_cluster" "e_commerce_cluster" {
+  count = local.dataproc_enabled ? 1 : 0 # enable / disable dataproc
   name     = "e-commerce-dataproc-cluster"
   region   = var.location
   project  = var.project_id
