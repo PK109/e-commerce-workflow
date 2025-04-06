@@ -1,0 +1,41 @@
+id: batch_extract
+namespace: dev
+inputs:
+  - id: files
+    type: MULTISELECT
+    values:
+      - 2019-Oct
+      - 2019-Nov
+      - 2019-Dec
+      - 2020-Jan
+      - 2020-Feb
+      - 2020-Mar
+      - 2020-Apr
+    defaults:
+      - 2019-Oct
+      - 2019-Nov
+      - 2019-Dec
+      - 2020-Jan
+      - 2020-Feb
+      - 2020-Mar
+      - 2020-Apr
+    displayName: Files to obtain
+
+variables:
+  files: [ "2019-Oct", "2019-Nov", "2019-Dec", "2020-Jan", "2020-Feb", "2020-Mar", "2020-Apr" ]
+
+tasks:
+  - id: iterate
+    type: io.kestra.plugin.core.flow.ForEach
+    values: "{{ inputs.files }}"
+    concurrencyLimit: 2
+    tasks:
+      - id: subflow
+        type: io.kestra.plugin.core.flow.Subflow
+        namespace: dev
+        inputs:
+          month: "{{ taskrun.value }}"
+        flowId: extract_raw_data
+    errors:
+      - id: clear_on_error
+        type: io.kestra.plugin.core.storage.PurgeCurrentExecutionFiles

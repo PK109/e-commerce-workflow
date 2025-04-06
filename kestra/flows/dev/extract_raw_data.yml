@@ -1,5 +1,5 @@
 id: extract_raw_data
-namespace: null
+namespace: dev
 description: This flow downloads the raw file from server, splits it to separate files partitioned by day and uploads data to GCS.
 
 concurrency:

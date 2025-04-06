@@ -1,5 +1,5 @@
 id: ingest_to_bq
-namespace: null
+namespace: dev
 description: Files uploaded to GCS are ingested to BigQuery and archived in separate folder
 
 concurrency:

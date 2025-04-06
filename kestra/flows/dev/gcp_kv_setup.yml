@@ -1,5 +1,5 @@
 id: gcp_kv_setup
-namespace: null
+namespace: dev
 
 tasks:
   - id: user_note
@@ -24,7 +24,7 @@ tasks:
     type: io.kestra.plugin.core.kv.Set
     key: GCP_PROJECT_ID
     kvType: STRING
-    value: fleet-aleph-447822-a2
+    value: e-commerce-validation
 
   - id: gcp_location
     type: io.kestra.plugin.core.kv.Set
@@ -36,7 +36,7 @@ tasks:
     type: io.kestra.plugin.core.kv.Set
     key: GCP_BUCKET_URL
     kvType: STRING
-    value: fleet-aleph-447822-a2-e_commerce_storage-1
+    value: e-commerce-validation-e_commerce_storage-1
 
   - id: gcp_dataset
     type: io.kestra.plugin.core.kv.Set

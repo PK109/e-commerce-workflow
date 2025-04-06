@@ -1,5 +1,5 @@
 id: push_to_git
-namespace: null
+namespace: system
 
 inputs:
   - id: CommitMessage
