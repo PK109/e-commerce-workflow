@@ -4,7 +4,13 @@ variable "credentials" {
 }
 
 variable "project_id" {
-  default = "fleet-aleph-447822-a2"
+  default = "e-commerce-validation"
+}
+
+variable "service_account_mail" {
+  default = "terraform-service-account@e-commerce-validation.iam.gserviceaccount.com"
+  description = "Mail of service account that will handle startup script."
+  
 }
 
 variable "bq_dataset_name" {

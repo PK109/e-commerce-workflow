@@ -106,6 +106,8 @@ resource "google_compute_instance" "instance-e-commerce" {
   chmod +x ./java_install.sh
   ./java_install.sh
   pip install pyspark jupyter 
+  cd /home/${var.vm_user}/
+  sudo chown -R  przemek:przemek ./e-commerce_project/
   set +x
   EOT
 
@@ -130,7 +132,7 @@ resource "google_compute_instance" "instance-e-commerce" {
   }
 
   service_account {
-    email  = "de-zoomcamp@fleet-aleph-447822-a2.iam.gserviceaccount.com"
+    email  = var.service_account_mail
     scopes = ["https://www.googleapis.com/auth/devstorage.read_only",
               "https://www.googleapis.com/auth/logging.write",
               "https://www.googleapis.com/auth/monitoring.write", 
@@ -209,7 +211,7 @@ resource "google_dataproc_cluster" "e_commerce_cluster" {
     }
 
     autoscaling_config {
-      policy_uri = google_dataproc_autoscaling_policy.auto_scaling.name
+      policy_uri = google_dataproc_autoscaling_policy.auto_scaling[0].name
     }
     
 
