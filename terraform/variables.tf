@@ -31,12 +31,12 @@ variable "vm_standard_type" {
   description = "Default type of VM created"
   default = "e2-standard-2"
 }
-variable "vm_standard_os" {
+variable "vm_image" {
   description = "Default OS of VM created"
   default = "projects/ubuntu-os-cloud/global/images/ubuntu-2204-jammy-v20250128"
 }
 
-variable "repo_url" {
+variable "project_repo_url" {
     description = "URL address to the repo containing this project. Should be publicly available to avoid working with GitHub tokens."
     default = "https://github.com/PK109/e-commerce-workflow.git"
 }
@@ -46,7 +46,7 @@ variable "vm_user" {
   default = "przemek"
 }
 
-variable "gcs_storage_class" {
+variable "gcs_bucket_storage_class" {
   default = "STANDARD"
 }
 
