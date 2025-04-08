@@ -43,3 +43,12 @@ tasks:
     key: GCP_DATASET
     kvType: STRING
     value: e_commerce_dataset
+
+  - id: sync_dbt_files
+    description: "Importing dbt project to run it with DBT CLI."
+    type: io.kestra.plugin.git.SyncNamespaceFiles
+    url: https://github.com/PK109/e-commerce-workflow
+    branch: main
+    namespace: "{{flow.namespace}}"
+    gitDirectory: dbt
+    dryRun: false

@@ -14,6 +14,7 @@ variables:
   file_url: "gs://{{ kv('GCP_BUCKET_URL') }}/{{ taskrun.value }}"
   bq_staging_table: "{{ kv('GCP_PROJECT_ID') }}.{{ kv('GCP_DATASET') }}.stg_{{ vars.table_name }}"
   bq_external_table: "{{ kv('GCP_PROJECT_ID') }}.{{ kv('GCP_DATASET') }}.ext_{{ vars.table_name }}_{{ vars.file_name }}"
+  dbt_command: "dbt build --vars {is_test_run: false}"
 
 tasks:
   - id: each
@@ -108,6 +109,40 @@ tasks:
 
   - id: purge_files
     type: io.kestra.plugin.core.storage.PurgeCurrentExecutionFiles
+
+  - id: dbt-build
+    type: io.kestra.plugin.dbt.cli.DbtCLI
+    env:
+      DBT_DATABASE: "{{kv('GCP_PROJECT_ID')}}"
+      DBT_SCHEMA: "{{kv('GCP_DATASET')}}"
+    namespaceFiles:
+      enabled: true
+    containerImage: ghcr.io/kestra-io/dbt-bigquery:latest
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+    inputFiles:
+      sa.json: "{{kv('GCP_CREDENTIALS')}}"
+    commands:
+      - dbt deps
+      - "{{vars.dbt_command}}"
+    storeManifest:
+      key: manifest.json
+      namespace: "{{ flow.namespace }}"
+    profiles: |
+      default:
+        outputs:
+          dev:
+            type: bigquery
+            dataset: "{{kv('GCP_DATASET')}}"
+            project: "{{kv('GCP_PROJECT_ID')}}"
+            location: "{{kv('GCP_LOCATION')}}"
+            keyfile: sa.json
+            method: service-account
+            priority: interactive
+            threads: 16
+            timeout_seconds: 300
+            fixed_retries: 1
+        target: dev
 
 triggers:
   - id: watch
