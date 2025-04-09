@@ -73,8 +73,10 @@ resource "google_compute_instance" "instance-e-commerce" {
 
   machine_type = "e2-standard-2"
 
-  metadata_startup_script = file("./startup_script.sh")
-
+  metadata_startup_script = templatefile("./startup_script.sh.tmpl", {
+    project_repo_url = var.project_repo_url
+    vm_user          = var.vm_user
+  })
 
   name = "instance-${time_static.deployment.unix}"
 

@@ -15,7 +15,6 @@ tasks:
 
   - id: gcp_creds
     type: io.kestra.plugin.core.kv.Set
-    namespace: tutorial
     key: GCP_CREDENTIALS
     kvType: STRING
     value: Fill that KV manually
