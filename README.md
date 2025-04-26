@@ -13,12 +13,14 @@ Project can be directly utilized to perform dashboards on Looker studio or any s
 - **Orchestration:** Kestra orchestrates data ingestion and transformation workflows.
 - **Data Transformation:** dbt builds data models and metrics for analysis.
 - **Visualization:** after build, data is ready to be visualized.
-
+## **Project Infrastructure**
+![e-commerce workflow diagram](https://github.com/user-attachments/assets/14e493ee-4cb1-448f-9c11-1b80f548e7e9)
 ## **Project Structure**
 - **`terraform/`**: Contains Terraform configurations for provisioning GCP resources.
 - **`kestra/`**: Includes Kestra workflow definitions and simple TF file to import flows to application
 - **`dbt/`**: Houses dbt models and configurations for data transformation.
 - **`spark/`**: Contains PySpark scripts for data processing. Not in use for now.
+
 
 
 
